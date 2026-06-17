@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday Mildred 🎀</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --blush: #F9C8D9;
+      --rose:  #E8729A;
+      --deep:  #C0446E;
+      --petal: #FDE8F0;
+      --ink:   #3D1A28;
+      --white: #FFFAFC;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--petal);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Sans', sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      border-radius: 2rem;
+      padding: 3rem 2.5rem 2.5rem;
+      max-width: 440px;
+      width: 90vw;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(192,68,110,0.25);
+      animation: rise 0.9s cubic-bezier(.22,1,.36,1) both;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('Queen.jpg') center/cover no-repeat;
+      opacity: 0.18;
+      z-index: 0;
+      border-radius: 2rem;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 245, 250, 0.78);
+      z-index: 0;
+      border-radius: 2rem;
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .ribbon {
+      display: inline-block;
+      background: var(--rose);
+      color: var(--white);
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.35rem 1.1rem;
+      border-radius: 99px;
+      margin-bottom: 1.4rem;
+    }
+
+    .name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 9vw, 3.2rem);
+      font-weight: 700;
+      color: var(--deep);
+      line-height: 1.1;
+      margin-bottom: 0.3rem;
+    }
+
+    .divider {
+      width: 48px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--blush), var(--rose));
+      border-radius: 99px;
+      margin: 1rem auto 1.4rem;
+    }
+
+    .message {
+      font-size: 0.97rem;
+      color: var(--ink);
+      line-height: 1.85;
+      font-weight: 300;
+      max-width: 340px;
+      margin: 0 auto 1.6rem;
+    }
+
+    .message strong {
+      font-weight: 400;
+      color: var(--deep);
+    }
+
+    .emojis {
+      font-size: 1.4rem;
+      letter-spacing: 0.3rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .footer {
+      font-size: 0.72rem;
+      color: var(--rose);
+      letter-spacing: 0.06em;
+      font-style: italic;
+    }
+
+    #timer-bar-wrap {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 5px;
+      background: rgba(232,114,154,0.2);
+      z-index: 99;
+    }
+
+    #timer-bar {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, var(--rose), var(--deep));
+      transition: width 1s linear;
+    }
+
+    #blank {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #0a0a0a;
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: #333;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+    }
+
+    #blank.show {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="card">
+  <div class="card-content">
+    <div class="ribbon">19 · June · 2026</div>
+    <div class="name">Happy Birthday,<br/>Mildred 🎀</div>
+    <div class="divider"></div>
+    <p class="message">
+      I could write a whole speech but honestly you'd probably read it,
+      smile, look away and not say anything — which would still make my day. 😂<br/><br/>
+      God was clearly showing off the day He made you. I hope this new age
+      brings you everything you've been too humble to ask for.<br/><br/>
+      Have your peace of mind today — no stress, no nonsense,
+      just you and your moment. You deserve it more than you know.<br/><br/>
+      <strong>Happy Birthday Queen. 🌸</strong>
+    </p>
+    <div class="emojis">🌸🎂✨🌸</div>
+    <p class="footer">made just for you &nbsp;·&nbsp; wishing you the best day ever</p>
+  </div>
+</div>
+
+<div id="timer-bar-wrap"><div id="timer-bar"></div></div>
+<div id="blank"><span>this moment was made only for you 🎀</span></div>
+
+<script>
+  // Confetti
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  const COLORS = ['#F9C8D9','#E8729A','#C0446E','#FDE8F0','#ffffff','#f7a8c4'];
+  const PIECES = 120;
+  let W, H, pieces;
+
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+
+  function randomPiece() {
+    return {
+      x: Math.random() * W, y: Math.random() * -H,
+      w: 6 + Math.random() * 8, h: 10 + Math.random() * 6,
+      r: Math.random() * Math.PI * 2, dr: (Math.random() - 0.5) * 0.06,
+      vy: 1.5 + Math.random() * 2.5, vx: (Math.random() - 0.5) * 1.2,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      alpha: 0.75 + Math.random() * 0.25,
+    };
+  }
+
+  function init() { resize(); pieces = Array.from({length: PIECES}, randomPiece); }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    pieces.forEach(p => {
+      ctx.save(); ctx.globalAlpha = p.alpha;
+      ctx.translate(p.x, p.y); ctx.rotate(p.r);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+      p.x += p.vx; p.y += p.vy; p.r += p.dr;
+      if (p.y > H + 20) { p.y = -20; p.x = Math.random() * W; }
+    });
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  init();
+  draw();
+
+  // Self-destruct timer
+  const DURATION = 35;
+  const KEY = 'mildred_bday_seen';
+
+  if (localStorage.getItem(KEY)) {
+    document.getElementById('blank').classList.add('show');
+  } else {
+    const bar = document.getElementById('timer-bar');
+    let elapsed = 0;
+    const interval = setInterval(() => {
+      elapsed++;
+      const pct = ((DURATION - elapsed) / DURATION) * 100;
+      bar.style.width = pct + '%';
+      if (elapsed >= DURATION) {
+        clearInterval(interval);
+        localStorage.setItem(KEY, '1');
+        document.getElementById('blank').classList.add('show');
+      }
+    }, 1000);
+  }
+</script>
+
+</body>
+</html>
+ 
